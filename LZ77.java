@@ -14,7 +14,7 @@ public class LZ77
 		//System.out.println("In");
 		String[] arr = new String[100000];
 		int count = 256;
-		int i = 0,flag = 0;
+		int i = 0,flag = 0,lc = 0;
 		HashMap<String,Integer> dictionary = new HashMap<String,Integer>();
 		for(i = 0; i<data.length()-1; i++)
 		{
@@ -28,7 +28,7 @@ public class LZ77
 					temp = "0"+temp;
 					l--;
 				}*/
-				arr[i]=temp;
+				arr[i]=temp;lc++;
 				dictionary.put(""+data.charAt(i)+data.charAt(i+1),++count);
 				//System.out.println(""+data.charAt(i)+data.charAt(i+1));
 				//System.out.println(dictionary.get(""+data.charAt(i)+data.charAt(i+1)));
@@ -61,40 +61,83 @@ public class LZ77
 					stemp = st;
 					flag = 1;
 				}
-				System.out.println("Entered: "+stemp);
+				//System.out.println("Entered: "+stemp);
 				int temp = dictionary.get(stemp);
 				arr[i]=Integer.toBinaryString(temp);
 				dictionary.put(st,++count);
+				lc++;
 				//System.out.println("Out");
 			}
 		}
 		if(flag == 0)
 		{
 			//System.out.println("In here");
-			arr[i] = Integer.toBinaryString(data.charAt(i));
+			arr[i] = Integer.toBinaryString(data.charAt(i));lc++;
 			//System.out.println(arr[i]);
 		}
 		int noOfBits = Integer.toBinaryString(count).length();
+		int legitBits = noOfBits*(lc)+8;
+		//System.out.println(""+lc+legitBits+noOfBits);
+		int offsetBytes = 0;
+		if(noOfBits%8 != 0)
+			offsetBytes = (8-(legitBits%8))%8;
 		//System.out.println(""+noOfBits);
 		String ans = "";
+		for(int it = 0; it<offsetBytes; it++)
+		{
+			ans+="1";
+		}
+		String bits = Integer.toBinaryString(noOfBits);
+		int l = 8-bits.length();
+		while(l>0)
+		{
+			bits = "0"+bits;
+			l--;
+		}
+		ans += bits;
 		for(int x = 0; x<data.length(); x++)
 		{
 			if(arr[x]!=null)
-			ans+=arr[x]+" ";
+			{
+				l = noOfBits-arr[x].length();
+				while(l>0)
+				{
+					arr[x] = "0"+arr[x];
+					l--;
+				}
+				ans+=arr[x];
+			}
 		}
 		return ans;
 	}
 	public static void main(String[] args) 
 	{
 		String toEncode = "";
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
 		try{
+			BufferedReader bufferedReader = new BufferedReader(new FileReader("contents.txt"));
+  			StringBuffer stringBuffer = new StringBuffer();
+  			String line = null;
+  			while((line =bufferedReader.readLine())!=null)
+  			{
+	 
+   				stringBuffer.append(line).append("\n");
+  			}
+  			toEncode = stringBuffer.toString();
+  		}catch (IOException ioe) {
+  			ioe.printStackTrace();
+  		}
+  		/*try{
 			toEncode = bf.readLine();
+
 		}catch(IOException io)
 		{
 			io.printStackTrace();
-		}
+		}*/
+		//toEncode="thisisthithi";
 		LZ77 encoder = new LZ77(toEncode);
+		String a=encoder.encode();
+		//bytes[0] |= (byte) (1 << 5);
+		//bytes[0] &= (byte) ~(1 << 5);
 		System.out.println(encoder.encode());
 	}
 }
