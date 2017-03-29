@@ -136,6 +136,21 @@ public class LZ77
 		//toEncode="thisisthithi";
 		LZ77 encoder = new LZ77(toEncode);
 		String a=encoder.encode();
+		byte[] b = Bytewriter.stringToByte(a);
+		try{
+			FileOutputStream fos = new FileOutputStream("answer.txt");
+			int i;
+			for (i=0;i<b.length;i++ ) 
+			{
+				fos.write((byte)b[i]);
+			}
+			System.out.println(i);
+			if(fos != null)
+				fos.close();
+		}catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
 		//bytes[0] |= (byte) (1 << 5);
 		//bytes[0] &= (byte) ~(1 << 5);
 		System.out.println(encoder.encode());
