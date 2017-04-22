@@ -18,8 +18,10 @@ public class Bytewriter
 		int count = 0;
 		int length = binary.length()/8;
 		byte[] b = new byte[length];
+		//System.out.println(binary.length());
 		for(int i = 0,j=0;i<binary.length();i+=8,j++)
 		{
+			//System.out.println(j);
 			for(int k = 0;k<8;k++)
 			{
 				//System.out.print(binary.charAt(i+k));
