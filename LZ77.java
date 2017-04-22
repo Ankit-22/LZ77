@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 import java.lang.*;
 
@@ -7,12 +8,13 @@ public class LZ77
 	private String data;
 	public String decode()
 	{
+		
 		return null;
 	}
 	public String encode()
 	{
 		String[] arr = new String[1000000];
-		int count = 256;
+		int count = 255;
 		int i = 0,flag = 0,lc = 0;
 		HashMap<String,Integer> dictionary = new HashMap<String,Integer>();
 		for(i = 0; i<data.length()-1; i++)
@@ -128,7 +130,22 @@ public class LZ77
 		}catch(IOException ioe)
 		{
 			ioe.printStackTrace();
-		}	
+		}
+
+		byte[] bFile = {};
+		String filePath = "answer.txt";
+		try
+		{
+			bFile = Files.readAllBytes(new File(filePath).toPath());
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		String bin = Bytewriter.byteToString(bFile);
+		System.out.println(bin);
+		LZ77 decoder = new LZ77(bin);
+
 	}
 	LZ77(String data)
 	{
