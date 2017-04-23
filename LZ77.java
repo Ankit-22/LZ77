@@ -8,8 +8,62 @@ public class LZ77
 	private String data;
 	public String decode()
 	{
-		
-		return null;
+		HashMap<Integer,String> dictionary = new HashMap<Integer,String>();
+		int i = 0;
+		String output = "";
+		int count = 255;
+		while(data.charAt(i)=='1')
+			i++;
+		String wordLengthBinary = data.substring(i,i+8);
+		i+=8;
+		int wordLength = Integer.parseInt(wordLengthBinary,2);
+		while(i<data.length())
+		{
+			String temp = data.substring(i,i+wordLength);
+			Integer key = new Integer(Integer.parseInt(temp,2));
+			Integer nextKey;
+			String next;
+			if(i+wordLength<data.length())
+			{
+				next = data.substring(i+wordLength,i+2*wordLength);
+				nextKey = new Integer(Integer.parseInt(next,2));
+			}
+			else
+			{
+				nextKey = -1;
+				next = null;
+			}
+			if(nextKey == -1&&key<256)
+			{
+				output += (char)(int)key;
+			}
+			else if (nextKey == -1 && key>255)
+			{
+				output += dictionary.get(key);
+			}
+			else if(key<256&&nextKey<256)
+			{
+				dictionary.put(++count,""+(char)(int)key+(char)(int)nextKey);
+				output += (char)(int)key;
+			}
+			else if(key<256&&nextKey>255)
+			{
+				dictionary.put(++count,""+(char)(int)key+dictionary.get(nextKey).substring(0,1));
+				output += (char)(int)key;
+			}
+			else if(key>255&&nextKey<256)
+			{
+				dictionary.put(++count,dictionary.get(key)+(char)(int)nextKey);
+				output += dictionary.get(key);
+			}
+			else
+			{
+				dictionary.put(++count,dictionary.get(key)+dictionary.get(nextKey).substring(0,1));
+				output += dictionary.get(key);
+			}
+			i+=wordLength;
+		}
+		return output;
 	}
 	public String encode()
 	{
@@ -97,7 +151,7 @@ public class LZ77
 	{
 		String toEncode = "";
 		try{
-			BufferedReader bufferedReader = new BufferedReader(new FileReader("contents.txt"));
+			BufferedReader bufferedReader = new BufferedReader(new FileReader(args[0]));
   			StringBuffer stringBuffer = new StringBuffer();
   			String line = null;
   			while((line =bufferedReader.readLine())!=null)
@@ -119,12 +173,12 @@ public class LZ77
 		}
 		byte[] b = Bytewriter.stringToByte(a);
 		try{
-			FileOutputStream fos = new FileOutputStream("answer.txt");
+			FileOutputStream fos = new FileOutputStream(args[1]);
 			int i;
 			for (i=0;i<b.length;i++) 
 			{
 				fos.write((byte)b[i]);
-			}	
+			}
 			if(fos != null)
 				fos.close();
 		}catch(IOException ioe)
@@ -133,7 +187,7 @@ public class LZ77
 		}
 
 		byte[] bFile = {};
-		String filePath = "answer.txt";
+		String filePath = args[1];
 		try
 		{
 			bFile = Files.readAllBytes(new File(filePath).toPath());
@@ -145,7 +199,23 @@ public class LZ77
 		String bin = Bytewriter.byteToString(bFile);
 		System.out.println(bin);
 		LZ77 decoder = new LZ77(bin);
-
+		String decoded = decoder.decode();
+		byte[] toWrite = Bytewriter.UTFToISO(decoded);
+		if(decoded == null)
+		{
+			System.out.println("There was an error in decoding..");
+			return;
+		}
+		try
+		{
+			FileOutputStream fos = new FileOutputStream(args[3]);
+			fos.write(toWrite);
+			fos.close();
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	LZ77(String data)
 	{

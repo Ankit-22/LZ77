@@ -47,6 +47,15 @@ public class Bytewriter
 		}
 		return b;
 	}
+	public static byte[] UTFToISO(String utf)
+	{
+		byte[] b = new byte[utf.length()];
+		for(int i = 0; i < utf.length(); i++)
+		{
+			b[i] = (byte)(int)utf.charAt(i);
+		}
+		return b;
+	}
 	public static void main(String[] args) 
 	{
 		/*String s = "1100001001001110100001101000001101001001110011100000011100000001001100101000001010100000001100000011100000101100000010100001001000001010";
@@ -62,6 +71,9 @@ public class Bytewriter
 		String s = "0010001000000111";
 		byte[] b = Bytewriter.stringToByte(s);
 		System.out.println(String.format("%8s", Integer.toBinaryString(b[0] & 0xFF)).replace(' ', '0'));
-		System.out.println(String.format("%8s", Integer.toBinaryString(b[1] & 0xFF)).replace(' ', '0'));*/
+		System.out.println(String.format("%8s", Integer.toBinaryString(b[1] & 0xFF)).replace(' ', '0'));
+		
+		String s = "This is a content";
+		System.out.println(UTFToISO(s)[17]);*/
 	}
 }
