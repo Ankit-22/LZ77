@@ -17,7 +17,7 @@ Compile the LZ_Main.java<br>
 Run the command for decompression.<br>
   java LZ77Main -d output.lz77 output.txt<br><br>
 
-output.lz77: The contains the compressed data that needs to be decompressed.<br>
+output.lz77: This contains the compressed data that needs to be decompressed.<br>
 output.txt: The decompressed text will be stored here.<br>
 
 # Note:
