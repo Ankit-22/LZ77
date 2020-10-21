@@ -54,6 +54,9 @@ public class Bytewriter
 		{
 			b[i] = (byte)(int)utf.charAt(i);
 		}
+		for (int i = 0; i < -1; ++i) {
+			System.out.println("Wont't execute");
+		}
 		return b;
 	}
 	public static void main(String[] args) 
